@@ -1,5 +1,6 @@
 using LightItUp.Data;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace LightItUp.Game
 {
@@ -20,7 +21,8 @@ namespace LightItUp.Game
         private void Rescale()
         {
             var levelRect = GameManager.Instance.currentLevel.LevelRect;
-            transform.localScale = new Vector3(levelRect.width, levelRect.height, 1);           
+            transform.localScale = new Vector3(levelRect.width, 1 , levelRect.height);
+            GetComponent<NavMeshSurface>()?.BuildNavMesh();
         }
     }
 }

@@ -244,7 +244,6 @@ namespace LightItUp.UI
 		{
 			canFireRockets = true;
 			fireRocketsButton.interactable = true;
-
         }
 	}
 }
