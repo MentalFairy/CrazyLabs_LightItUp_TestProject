@@ -5,6 +5,7 @@ using HyperCasual;
 using UnityEngine;
 using LightItUp.Data;
 using LightItUp.UI;
+using UnityEditor;
 
 namespace LightItUp.Game
 {
@@ -1287,6 +1288,7 @@ namespace LightItUp.Game
         {
             CheckForBlocks(collision.gameObject);
             CheckForPlayerDummy(collision.gameObject);
+            CheckForMissile(collision.gameObject, collision);
         }
         protected void CheckCollisionRelease(Collision2D collision)
         {
@@ -1333,7 +1335,33 @@ namespace LightItUp.Game
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks collision against a missile.
+        /// If it did hit a missile, will collide, get pushed by a small force and destroyed.
+        /// </summary>
+        /// <returns>true, if hit by missile</returns>
+        protected bool CheckForMissile(GameObject go, Collision2D collision)
+        {
+            //TryGetComponent is safer and cleaner compared to GetComp
+            if (!go.TryGetComponent<MissileController>(out var missile))
+                return false;
+
+            //Collide and destroy the rocket
+            Collide();
+            Destroy(go);
+
+            //Calculate direction, and apply force
+            Vector3 forceDirection = new Vector2(transform.position.x, transform.position.y) - collision.contacts[0].point;
+            forceDirection = forceDirection.normalized;
+            _rb2d.AddForce(forceDirection * GameSettings.Player.missile_Collision_Force);
+
+            //Wrap up :)
+            return true;
+        }
+
         List<BlockController> collisionStayBlocks = new List<BlockController>();
+
         protected bool CheckForBlocksRelease(GameObject go)
         {
             var bl = go.GetComponent<BlockController>();

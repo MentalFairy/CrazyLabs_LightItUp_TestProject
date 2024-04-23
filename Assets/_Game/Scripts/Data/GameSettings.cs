@@ -105,6 +105,16 @@ namespace LightItUp.Data
 			public float reviveInvulnerabilityDuration = 5f;
 			public float blinkSpeed = 0.2f;
 			public float slowDownTarget = 0.5f;
+
+            /// <summary>
+            /// Indicates how many missiles will fire upon trigger.
+            /// </summary>
+            public uint missile_Count = 3;
+
+            /// <summary>
+            /// Indicates the force with which a block controllers rigidbody gets pushed upon collision with a missile.
+            /// </summary>
+            public float missile_Collision_Force = 500f;
         }
         [System.Serializable]
         public class CameraFocusSettings
@@ -115,6 +125,11 @@ namespace LightItUp.Data
             public float blockZoomBorder = 0;
             public float blockExplodePartsBorder = 1;
             public float blockExplodePartsFocusDuration = 3;
+
+            /// <summary>
+            /// Indicates for how long a block targeted by a missile will be in view of the focus cam.
+            /// </summary>
+            public float blockTargetedFocusDuration = 5;
             public float blockExplodePartsFocusFadeDuration = 0.5f;
             public float wallBorder = 0;
             public float wallZoomBorder = 0;

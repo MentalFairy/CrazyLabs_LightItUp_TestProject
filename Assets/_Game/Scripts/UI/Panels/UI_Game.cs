@@ -21,6 +21,9 @@ namespace LightItUp.UI
 		public GameObject progress;
 
 		public Button pauseButton;
+		public Button fireRocketsButton;
+
+		bool canFireRockets = false;
 
 		void Awake()
 		{
@@ -74,8 +77,9 @@ namespace LightItUp.UI
 			middleLine.SetActive(true);
 			middleLineBottom.SetActive(true);
 			GameManager.Instance.playerStart += HideHand;
-			//startHand.SetActive(true);
-			levelName.SetActive(true);
+			GameManager.Instance.OnLevelLoaded += ResetCanFireRockets;
+            //startHand.SetActive(true);
+            levelName.SetActive(true);
 			levelNameBackdrop.SetActive(true);
 			rightHand.GetComponent<Animator>().SetBool("ShowGameTutorial", GameData.PlayerData.showControlsTutorial);
 			leftHand.GetComponent<Animator>().SetBool("ShowGameTutorial", GameData.PlayerData.showControlsTutorial);
@@ -145,7 +149,8 @@ namespace LightItUp.UI
 				a.gameObject.SetActive(false);
 			}
 			GameManager.Instance.playerStart -= HideHand;
-		}
+            GameManager.Instance.OnLevelLoaded -= ResetCanFireRockets;
+        }
 		public void ShowFinger(int side)
 		{
 			if(GameData.PlayerData.showControlsTutorial)
@@ -222,6 +227,25 @@ namespace LightItUp.UI
 				// Pause();
 			}
 		}
+
+		public void OnFireRocketsButtonPress()
+		{
+			if (canFireRockets)
+			{
+				GameManager.Instance?.currentLevel?.player?.FireRockets();
+
+				//TODO: Enable for release?
+				//canFireRockets = false;
+				//fireRocketsButton.interactable = false;
+            }
+		}
+
+		void ResetCanFireRockets()
+		{
+			canFireRockets = true;
+			fireRocketsButton.interactable = true;
+
+        }
 	}
 }
 

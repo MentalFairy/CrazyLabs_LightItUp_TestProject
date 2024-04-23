@@ -13,6 +13,7 @@ namespace LightItUp.Data
         
         public GameLevel currentLevel;
         public Action playerStart;
+        public Action OnLevelLoaded;
         
         public static int currentLevelIndex;
         public static bool IsApplicationQuitting;
@@ -34,7 +35,8 @@ namespace LightItUp.Data
 
         private void Initialize()
         {
-            Application.targetFrameRate = 60;
+            //TODO: Re-evaluate implementation
+            Application.targetFrameRate = -1;
             Input.multiTouchEnabled = false;
 
             ObjectPool.Instance.Init();
@@ -247,6 +249,7 @@ namespace LightItUp.Data
             }
             
             currentLevel.ConfirmGameLoadFinalized ();
+            OnLevelLoaded?.Invoke();
         }
 
 		void ShowBoostersPurchaseFeature()

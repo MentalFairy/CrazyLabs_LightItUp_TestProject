@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using LightItUp.Data;
 using LightItUp.Sound;
 using LightItUp.UI;
+using UnityEngine.AI;
 
 namespace LightItUp.Game
 {
@@ -30,6 +31,7 @@ namespace LightItUp.Game
 		public ParticleSystem jumpShoesFX;
         public ParticleSystem metalBootsFX;
         public ParticleSystem deathFX;
+        public MissileController missileFX;
         public GameObject portal;
         public ParticleSystem portalEffect;
         public ParticleSystem portalEffect2;
@@ -1233,6 +1235,28 @@ namespace LightItUp.Game
 			return copy as T;
 		}
 
+        internal void FireRockets()
+        {
+            var solidLayer = LayerMask.NameToLayer("Solid");
+            
+            //Fetch and sort by complexity. Regular blocks have priority.
+            var blocks = GameManager.Instance.currentLevel.blocks.Where(b => b.gameObject.layer == solidLayer)
+                                                                 .OrderBy(b => b.transform.childCount)
+                                                                 .ToList();
 
+            if (blocks.Count == 0)
+                return;
+
+            //Remove obstacles on targeted elements, so agents collide fully with it!
+            blocks.Take((int)GameSettings.Player.missile_Count).ToList().ForEach(b => Destroy(b.gameObject.GetComponent<NavMeshObstacle>()));
+
+            for (int i = 0; i < GameSettings.Player.missile_Count; i++)
+            {
+                var missile = Instantiate(missileFX);
+                var targetBlock = blocks[i % blocks.Count];
+                missile.Initialize(transform, targetBlock);
+                GameManager.Instance.currentLevel.player.camFocus.AddTempTarget(targetBlock.col, GameSettings.CameraFocus.blockTargetedFocusDuration);
+            }
+        }
     }
 }

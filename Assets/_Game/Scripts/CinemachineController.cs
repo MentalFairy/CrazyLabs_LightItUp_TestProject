@@ -21,6 +21,7 @@ namespace LightItUp
 		public CinemachineTargetGroup targetGroup;
 		private GameLevel gameLevel;
 		private float tempTargetTime = 1f;
+		private float tempBlockTargetedTime = 5f;
 		private GameState currentGameState;
 		private List<CinemachineTargetGroup.Target> validTargets;
 		private bool isSeekingNearestBlock;
@@ -80,7 +81,20 @@ namespace LightItUp
 			AddTemporaryViewTarget (block.transform, tempTargetTime);
 		}
 
-		void AddTemporaryViewTarget(Transform target, float time)
+        public void AnnounceBlockTargeted(BlockController block)
+        {
+            if (!ISENABLED)
+            {
+                return;
+            }
+            if (!isInit)
+            {
+                return;
+            }
+            AddTemporaryViewTarget(block.transform, tempBlockTargetedTime);
+        }
+
+        void AddTemporaryViewTarget(Transform target, float time)
 		{
 			if (!ISENABLED) {
 				return;
@@ -90,7 +104,7 @@ namespace LightItUp
 			newTarget.radius = 1;
 			newTarget.weight = 1;
 			validTargets.Add (newTarget);
-			StartCoroutine(WaitFor(tempTargetTime, () => {
+			StartCoroutine(WaitFor(time, () => {
 				RemoveTemporaryTarget(target); 
 			}));
 			RefreshTargetGroup ();
